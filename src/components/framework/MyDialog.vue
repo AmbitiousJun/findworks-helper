@@ -4,21 +4,26 @@
   <Teleport to="body">
     <div 
       ref="myDialogModal"
-      @click="close"
+      @click="close(false)"
       class="my-dialog-modal" />
   </Teleport>
   <!-- 对话框头部 -->
   <div class="my-dialog__header">
-    <div class="title">{{ title }}</div>
-    <div class="close-icon-wrap">
-      <el-icon @click="close"><Close /></el-icon>
-    </div>
+    <span class="title">{{ title }}</span>
   </div>
   <div class="container">
     <slot></slot>
   </div>
   <div class="footer-wrap">
-    <slot name="footer"></slot>
+    <slot name="footer">
+      <el-button 
+        auto-insert-space
+        type="primary"
+        @click="close(false)"
+      >
+        关闭
+      </el-button>
+    </slot>
   </div>
 </div>
 </template>
@@ -34,9 +39,14 @@ const myDialog = ref();
 const dialogVisible = ref(false);
 
 const props = defineProps<{
+  // 对话框宽度
   width: number;
+  // 对话框高度
   height: number;
+  // 对话框标题
   title: string;
+  // 对话框关闭前的钩子，返回 true 继续关闭，否则不关闭
+  beforeClose?: () => boolean;
 }>();
 
 /**
@@ -63,8 +73,13 @@ const open: () => void = () => {
 
 /**
  * 关闭对话框
+ * @param force 是否强制关闭
  */
-const close: () => void = () => {
+const close = (force: boolean = false) => {
+  if (!force && props.beforeClose && !props.beforeClose()) {
+    // 调用方阻止了此次关闭
+    return;
+  }
   // 1 关闭遮罩层
   const dialogModal: HTMLElement = myDialogModal.value;
   dialogModal.style.width = '0';
@@ -99,35 +114,25 @@ defineExpose({
   .my-dialog__header {
     position: relative;
     padding: 15px 5px;
-    border-bottom: 1px solid #ddd;
-    font-size: 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    font-size: 16px;
+    text-align: center;
+    font-weight: 600;
     .title {
       width: fit-content;
-      margin-left: 10px;
       color: #303133;
-    }
-    .close-icon-wrap {
-      margin-right: 10px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      transition: .3s;
-      color: #909399;
-      &:hover {
-        color: #409eff;
-      }
+      letter-spacing: 3px;
     }
   }
   .footer-wrap {
     position: absolute;
     bottom: 0;
     padding: 15px;
+    width: 100%;
   }
   .container {
     padding: 15px;
+    max-height: 75%;
+    overflow-y: auto;
   }
 }
 </style>
