@@ -20,11 +20,12 @@
       <h3 class="label">通过 <span>{{ data.company.type }}</span> 投递</h3>
       <div v-if="data.company.type === '官网'" class="official-wrap">
         <div class="type-info" v-if="data.company.website">
-          链接：
+          <div>链接：</div>
           <el-link 
             target="_blank" 
             :href="data.company.website" 
             type="primary"
+            :underline="false"
           >
             {{ data.company.website }}
           </el-link>
@@ -32,14 +33,16 @@
       </div>
       <div v-if="data.company.type === '求职网站'" class="employ-site-wrap">
         <div class="type-info" v-if="data.company.employmentSiteInfo!.name">
-          网站名称：<el-tag effect="dark">{{ data.company.employmentSiteInfo!.name }}</el-tag>
+          <div>网站名称：</div>
+          <el-tag effect="dark">{{ data.company.employmentSiteInfo!.name }}</el-tag>
         </div>
         <div class="type-info" v-if="data.company.employmentSiteInfo!.link">
-          网站链接：
+          <div>网站链接：</div>
           <el-link 
             target="_blank" 
             :href="data.company.employmentSiteInfo!.link" 
             type="primary"
+            :underline="false"
           >
             {{ data.company.employmentSiteInfo!.link }}
           </el-link>
@@ -47,7 +50,8 @@
       </div>
       <div v-if="data.company.type === '公众号'" class="mp-wrap">
         <div class="type-info" v-if="data.company.mpName">
-          公众号名称：<el-tag effect="dark">{{ data.company.mpName }}</el-tag>
+          <div>公众号名称：</div>
+          <el-tag effect="dark">{{ data.company.mpName }}</el-tag>
         </div>
       </div>
     </div>
@@ -198,6 +202,11 @@ defineExpose({
     }
     .type-info {
       margin-top: 10px;
+      word-break: break-all;
+      display: flex;
+      div {
+        min-width: fit-content;
+      }
     }
   }
   .base-status-wrap {
